@@ -27,8 +27,8 @@ jobs:
       - name: Fetch upstream main
         run: git fetch upstream main
 
-      - name: Merge upstream main with no-ff
-        run: git merge upstream/main --no-ff
+      - name: Merge upstream main with allow-unrelated-histories
+        run: git merge upstream/main --no-ff --allow-unrelated-histories
 
       - name: Push changes to fork
         run: git push origin main
