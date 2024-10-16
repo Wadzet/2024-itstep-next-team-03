@@ -16,7 +16,7 @@ jobs:
           ref: main
 
       - name: Add upstream repository
-        run: git remote add upstream https://github.com/ORIGINAL_OWNER/REPOSITORY.git
+        run: git remote add upstream https://github.com/koldovsky/2024-itstep-next-team-03.git
 
       - name: Set up git config for merge strategy
         run: |
