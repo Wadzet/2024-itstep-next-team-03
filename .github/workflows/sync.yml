@@ -1,0 +1,37 @@
+name: Sync with upstream
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout forked repository
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Add upstream repository
+        run: git remote add upstream https://github.com/ORIGINAL_OWNER/REPOSITORY.git
+
+      - name: Set up git config for merge strategy
+        run: |
+          git config --global user.name "Your GitHub Actions Bot"
+          git config --global user.email "github-actions-bot@example.com"
+          git config pull.rebase false
+          git config merge.ff only
+
+      - name: Pull latest changes from upstream main
+        run: git pull upstream main --ff-only
+
+      - name: Push changes to fork
+        run: git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clean up git refs
+        run: git remote remove upstream
