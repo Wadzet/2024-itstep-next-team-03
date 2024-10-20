@@ -30,7 +30,14 @@ jobs:
         run: git fetch upstream main
 
       - name: Merge upstream main with allow-unrelated-histories
-        run: git merge upstream/main --no-ff --allow-unrelated-histories
+        run: git merge upstream/main --no-ff --allow-unrelated-histories --strategy-option theirs || true
+
+      - name: Check for merge conflicts
+        run: |
+          if git ls-files -u | grep -q .; then
+            echo "Merge conflicts detected!"
+            exit 1
+          fi
 
       - name: Push changes to fork
         run: git push origin main
