@@ -87,7 +87,7 @@ export async function seedDatabase() {
             ${product.manufacturer}, 
             ${product.price}, 
             ${product.quantityAvailable}, 
-            ${product.imageUrl}, 
+            ${product.imageUrl}
             ${product.clasps}, 
             ${JSON.stringify(product.attributes)}, 
             ${product.description}
