@@ -16,9 +16,9 @@ const config: Config = {
         primaryclr: "#f2f1ee",
         background: "var(--background)",
         foreground: "var(--foreground)",
+        greyclr: "#EBEBEB",
       },
     },
   },
-  plugins: [],
 };
 export default config;
