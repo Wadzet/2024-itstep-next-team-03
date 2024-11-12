@@ -27,6 +27,25 @@ export async function fetchProductsByCategory(categoryName: string) {
   }
 }
 
+export async function fetchProductsByCategoryId(
+  categoryId: number,
+  limit: number = 3
+) {
+  try {
+    const data = await sql<Product>`
+      SELECT * FROM product
+     
+      WHERE product.category_id = ${categoryId}
+      LIMIT ${limit}
+    `;
+
+    return data.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch products.");
+  }
+}
+
 export async function fetchProducts() {
   try {
     const data = await sql<Product>`SELECT * FROM product`;
@@ -60,7 +79,6 @@ export async function fetchProductsBySubcategory(subcategoryName: string) {
       products.push(product.rows[0]);
     }
   }
-  console.log(products);
 
   return products;
 }
@@ -76,5 +94,19 @@ export async function fetchSubcategories(category: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch subcategories.");
+  }
+}
+
+export async function fetchProductById(id: string) {
+  try {
+    const data =
+      await sql<Product>`SELECT * FROM product WHERE product_id = ${parseInt(
+        id,
+        10
+      )}`;
+    return data.rows[0];
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch product.");
   }
 }
