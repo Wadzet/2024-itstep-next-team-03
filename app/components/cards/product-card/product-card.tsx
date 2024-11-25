@@ -6,15 +6,9 @@ import heartBlack from "@/public/icons/heart-black.svg";
 import ProductCardSwitch from "./product-card-switch";
 import Button from "@/app/components/button/button";
 import wishlistData from "@/app/lib/wishlist_data.json";
+import { CartItem } from "@/app/lib/definitions";
 
-interface ProductCardProps {
-  id: number;
-  title: string;
-  price?: number;
-  image: string;
-}
-
-const ProductCard = ({ id, title, price, image }: ProductCardProps) => {
+const ProductCard = ({ id, title, price, image }: CartItem) => {
   const [isInWishlist, setIsInWishlist] = useState(
     wishlistData.product_ids.includes(id)
   );
@@ -33,6 +27,7 @@ const ProductCard = ({ id, title, price, image }: ProductCardProps) => {
 
   return (
     <div
+      key={id}
       className={`shadow-[rgba(50,50,93,0.25)_0px_6px_12px_-2px,_rgba(0,0,0,0.3)_0px_3px_7px_-3px] flex flex-col 
       flex-1 bg-white h-128 p-4 relative transition-all duration-300 hover:shadow-xl hover:shadow-gray-500 hover:z-20`}
     >

@@ -31,6 +31,7 @@ export default function CardsGrid({ params }: CardsGridProps) {
           : "sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3";
 
   return (
+
       <div
           className={`grid justify-center gap-4 grid-rows-auto ${gridClassName}`}
       >
@@ -40,11 +41,13 @@ export default function CardsGrid({ params }: CardsGridProps) {
             productsToDisplay.map(
                 ({ product_id, product_name, price, image_url }) => (
                     <ProductCard
-                        key={product_id}
-                        id={product_id}
-                        title={product_name}
-                        price={price}
-                        image={image_url}
+                      key={product_id}
+                      id={product_id}
+                      title={product_name}
+                      price={price}
+                      image={image_url}
+                      discount={0}
+                      quantity={1}
                     />
                 )
             )
