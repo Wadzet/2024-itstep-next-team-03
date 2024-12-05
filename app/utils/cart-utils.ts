@@ -88,6 +88,20 @@ export const decrementQuantity = (id: number): boolean => {
   }
 };
 
+export const removeFromCart = (id: number): boolean => {
+  try {
+    const cart = getCart();
+    const updatedCart = cart.filter((cartItem) => cartItem.id !== id);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    dispatchLocalStorageUpdate("cart", JSON.stringify(updatedCart));
+    console.log("Product removed from cart:", id);
+    return true;
+  } catch (error) {
+    console.error("Error removing product from cart:", error);
+    return false;
+  }
+};
+
 export const getCartItemCount = (): number => {
   return getCart().length;
 };

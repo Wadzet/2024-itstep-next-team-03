@@ -1,8 +1,14 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import { decrementQuantity, incrementQuantity } from "@/app/utils/cart-utils";
+import TrashCan from "../../../../public/icons/trash-can.svg";
+
+import {
+  decrementQuantity,
+  incrementQuantity,
+  removeFromCart,
+} from "@/app/utils/cart-utils";
 
 interface OrderProductType {
   params: {
@@ -10,28 +16,44 @@ interface OrderProductType {
     src: string;
     alt: string;
     title: string;
-    customAttribute: string;
-    price: number;
+    price: number | undefined;
     discount: number;
-    amount: number;
+    quantity: number;
     type: "checkout" | "complete" | "cart";
   };
 }
 
 export default function OrderProduct({ params }: OrderProductType) {
-  const [quantity, setQuantity] = useState(params.amount);
+  const [quantity, setQuantity] = useState(params.quantity);
+  const [productTotalCost, setProductTotalCost] = useState<number>(0);
 
   const handleDecrement = () => {
     if (quantity > 1) {
       setQuantity((prevQuantity) => prevQuantity - 1);
       decrementQuantity(params.id);
+      setProductTotalCost(
+        Number((quantity * ((params.price || 0) - params.discount)).toFixed(2))
+      );
     }
   };
 
   const handleIncrement = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
     incrementQuantity(params.id);
+    setProductTotalCost(
+      Number((quantity * ((params.price || 0) - params.discount)).toFixed(2))
+    );
   };
+
+  const handleRemove = () => {
+    removeFromCart(params.id);
+  };
+
+  useEffect(() => {
+    setProductTotalCost(
+      Number((quantity * ((params.price || 0) - params.discount)).toFixed(2))
+    );
+  }, [quantity, params.price, params.discount]);
 
   return (
     <div className="flex flex-col gap-8 mt-8">
@@ -52,21 +74,23 @@ export default function OrderProduct({ params }: OrderProductType) {
               : "flex-col"
           } gap-2 mr-4 justify-between`}
         >
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-row justify-between">
             <p className="font-bold">{params.title}</p>
-            <p
-              className={
-                params.type === "checkout"
-                  ? ""
-                  : "text-[var(--input-text-clr)] opacity-70"
-              }
-            >
-              {params.customAttribute}
-            </p>
-            {params.type === "cart" && (
-              <p className="text-[var(--input-text-clr)] underline decoration-dashed underline-offset-4">
-                Remove
-              </p>
+            {params.type === "checkout" && (
+              <div className="">
+                <div
+                  onClick={handleRemove}
+                  className="cursor-pointer transition-transform duration-200 flex items-center justify-center"
+                >
+                  <Image
+                    src={TrashCan}
+                    alt="Remove"
+                    width={24}
+                    height={24}
+                    className="opacity-80 hover:opacity-100 transition-opacity duration-200"
+                  />
+                </div>
+              </div>
             )}
           </div>
 
@@ -75,10 +99,13 @@ export default function OrderProduct({ params }: OrderProductType) {
               className={`h-full md:h-fit flex flex-col md:flex-row items-center justify-end md:justify-between gap-4 md:gap-8 lg:gap-14`}
             >
               {params.discount === 0 ? (
-                <p>{params.price} ₴</p>
+                <div>
+                  <p>{params.price} ₴ / pcs</p>
+                  <p className="font-bold">{productTotalCost} ₴</p>
+                </div>
               ) : (
                 <div className="flex flex-col gap-1">
-                  <p>{params.price - params.discount} ₴</p>
+                  <p>{(params.price || 0) - params.discount} ₴</p>
                   <p className="line-through text-[var(--input-text-clr)] opacity-70">
                     {params.price} ₴
                   </p>
@@ -90,9 +117,7 @@ export default function OrderProduct({ params }: OrderProductType) {
                 <button onClick={handleIncrement}>+</button>
               </div>
               {params.type === "cart" && (
-                <p className="hidden md:block">
-                  {params.amount * (params.price - params.discount)} ₴
-                </p>
+                <p className="hidden md:block">{productTotalCost} ₴</p>
               )}
             </div>
           ) : (
@@ -100,25 +125,19 @@ export default function OrderProduct({ params }: OrderProductType) {
               <div className="flex flex-row gap-1">
                 <p className="font-bold">Price:</p>
                 <p className="text-[var(--input-text-clr)] opacity-70">
-                  {params.price - params.discount} ₴
+                  {(params.price || 0) - params.discount} ₴
                 </p>
               </div>
               <div className="flex flex-row gap-1">
                 <p className="font-bold">Quantity:</p>
                 <p className="text-[var(--input-text-clr)] opacity-70">
-                  {params.amount} pcs
+                  {params.quantity} pcs
                 </p>
               </div>
               <p className="font-bold">
-                {params.amount * (params.price - params.discount)} ₴
+                {params.quantity * ((params.price || 0) - params.discount)} ₴
               </p>
             </div>
-          )}
-
-          {params.type === "checkout" && (
-            <p className="text-[var(--input-text-clr)] underline decoration-dashed underline-offset-4">
-              Remove
-            </p>
           )}
         </div>
       </div>
