@@ -9,6 +9,7 @@ on:
 
 jobs:
   sync:
+    if: false # remove this line to enable the workflow
     runs-on: ubuntu-latest
 
     steps:
